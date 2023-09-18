@@ -16,11 +16,14 @@
 
 <style>
     .box-overlay {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI Adjusted","Segoe UI","Liberation Sans",sans-serif;
         position: fixed;
+        z-index: 2147483647;
         width: 300px;
         bottom: 16px;
         right: 16px;
         color: black;
+        font-size: 14px;
         background-color: white;
         border: 1px solid black;
         padding: 16px;
