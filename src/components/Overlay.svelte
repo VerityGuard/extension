@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { storage } from "../storage";
     import Options from "./Options.svelte";
+
     let count = 0;
 
     onMount(() => {
@@ -29,4 +30,3 @@
         padding: 16px;
     }
 </style>
-  
