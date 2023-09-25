@@ -1,4 +1,4 @@
-import Popup from "../components/Popup.svelte";
+import { Popup } from "../components/";
 
 // Action popup
 // https://developer.chrome.com/docs/extensions/reference/action/

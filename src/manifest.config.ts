@@ -24,8 +24,8 @@ export default defineManifest(async (env) => ({
     },
     content_scripts: [
         {
-            matches: ["https://*/*"],
             js: ["src/content/index.ts"],
+            matches: ["<all_urls>", "https://*/*"],
         },
     ],
     background: {
@@ -35,6 +35,12 @@ export default defineManifest(async (env) => ({
         page: "src/options/options.html",
         open_in_tab: false,
     },
+    web_accessible_resources: [
+        {
+            resources: ["src/assets/images/*"],
+            matches: ["<all_urls>"],
+        }
+    ],
     action: {
         default_popup: "src/popup/popup.html",
         default_icon: {

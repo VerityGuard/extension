@@ -1,4 +1,4 @@
-import Options from "../components/Options.svelte";
+import { Options } from "../components/unit";
 import { storage } from "../storage";
 
 // Options

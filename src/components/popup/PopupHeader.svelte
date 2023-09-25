@@ -1,9 +1,11 @@
 <script lang="ts">
+    import getManifest from "../../utils/getManifest";
 
+    const version = getManifest().version;
 </script>
 
 <div class="header">
-    <span>AI TEXT DETECTOR v1.0.0</span>
+    <span>AI TEXT DETECTOR v{version}</span>
 </div>
 
 <style>

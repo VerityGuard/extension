@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { storage } from "../storage";
+    import { storage } from "../../../storage";
     import Options from "./Options.svelte";
 
     let count = 0;
