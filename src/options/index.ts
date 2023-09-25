@@ -1,4 +1,4 @@
-import { Options } from "../components/unit";
+import { Options } from "../components/unit/template";
 import { storage } from "../storage";
 
 // Options
