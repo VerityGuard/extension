@@ -4,7 +4,7 @@
     import GlobalButtonWindow from "./GlobalButtonWindow.svelte";
     import GlobalSettingsWindow from "./GlobalSettingsWindow.svelte";
     import GlobalHide from "./GlobalHide.svelte";
-
+    
     let hide = false;
 
     let active = false;
@@ -12,37 +12,49 @@
     const SETTINGS_SHOW_DELAY = 700;
     const SETTINGS_CLOSE_DELAY = 1000;
     function onGlobalButtonHover() {
-        clearTimeout(hoverTimer);
-        hoverTimer = setTimeout(() => {
-            active = true;
-        }, SETTINGS_SHOW_DELAY);
+        if (!default_state) {
+            clearTimeout(hoverTimer);
+            hoverTimer = setTimeout(() => {
+                active = true;
+            }, SETTINGS_SHOW_DELAY);
+        }
     }
 
     function onGlobalButtonLeave() {
-        clearTimeout(hoverTimer);
-        hoverTimer = setTimeout(() => {
-            active = false;
-        }, SETTINGS_CLOSE_DELAY);
+        if (!default_state) {
+            clearTimeout(hoverTimer);
+            hoverTimer = setTimeout(() => {
+                active = false;
+            }, SETTINGS_CLOSE_DELAY);
+        }
     }
 
     let global_button_window_open = false;
-    function toggleWindow() {
+    function toggleGlobalButtonWindow() {
         global_button_window_open = !global_button_window_open;
         active = false;
     }
+
+    let global_settings_window_open = false;
+    function toggleGlobalSettingsWindow() {
+        global_settings_window_open = !global_settings_window_open;
+        active = false;
+    }
+
+    let default_state = global_button_window_open || global_settings_window_open;
 
 </script>
 
 {#if !hide}
     <GlobalButtonWindow bind:open={global_button_window_open} />
-    <GlobalSettingsWindow />
+    <GlobalSettingsWindow bind:open={global_settings_window_open} />
     <div class="global-button-wrapper" role="presentation" 
         on:mouseenter={onGlobalButtonHover} 
         on:mouseleave={onGlobalButtonLeave}
     >
-        <GlobalSettings {active} />
+        <GlobalSettings {active} on:click={toggleGlobalSettingsWindow} />
         <!--<GlobalHide {active} bind:hide/>-->
-        <GlobalButton on:click={toggleWindow} />
+        <GlobalButton on:click={toggleGlobalButtonWindow} />
     </div>
 {/if}
 

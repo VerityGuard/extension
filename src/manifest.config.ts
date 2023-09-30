@@ -37,7 +37,7 @@ export default defineManifest(async (env) => ({
     },
     web_accessible_resources: [
         {
-            resources: ["src/assets/images/*"],
+            resources: ["src/assets/images/*", "src/css/*"],
             matches: ["<all_urls>"],
         }
     ],
