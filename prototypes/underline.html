@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Underline</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <p class="span">
+        Lorem ipsum dolor highlight sit amet consectetur adipisicing elit. Dolorem ad natus, tempore error accusantium dolores veritatis sequi nisi inventore aliquid fugit consectetur doloribus iure cupiditate facere tenetur! Commodi, tempora aspernatur?
+    </p>
+
+    <br>
+    <br>
+
+    <p class="div" style="max-width: 400px;">
+        Lorem ipsum dolor highlight sit amet consectetur adipisicing elit. Dolorem ad natus, tempore error accusantium dolores veritatis sequi nisi inventore aliquid fugit consectetur doloribus iure cupiditate facere tenetur! Commodi, tempora aspernatur?
+    </p>
+
+    <br>
+
+    <p class="shaping">
+        Lorem ipsum dolor highlight sit amet consectetur adipisicing elit. Dolorem ad natus, tempore error accusantium dolores veritatis sequi nisi inventore aliquid fugit consectetur doloribus iure cupiditate facere tenetur! Commodi, tempora aspernatur?
+
+    </p>
+
+    <br>
+
+    <p class="moving">
+        Lorem ipsum dolor highlight sit amet consectetur adipisicing elit. Dolorem ad natus, tempore error accusantium dolores veritatis sequi nisi inventore aliquid fugit consectetur doloribus iure cupiditate facere tenetur! Commodi, tempora aspernatur?
+    </p>
+
+    <div style="position: absolute; right: 20px; bottom: 20px;">
+        <button class="scan" onclick="scanPage()">Scan</button>
+    </div>
+    <script src="underline.js"></script>
+    <script>
+        // Function to change width and height of the "shaping" div every 7 seconds
+        function changeShapingSize() {
+            const shapingDiv = document.querySelector('.shaping');
+            shapingDiv.style.width = Math.floor(Math.random() * 200 + 100) + 'px'; // Change width to a random value between 100px and 300px
+            shapingDiv.style.height = Math.floor(Math.random() * 200 + 100) + 'px'; // Change height to a random value between 100px and 300px
+        }
+
+        // Function to change the position of the "moving" div every 12 seconds
+        function changeMovingPosition() {
+            const movingDiv = document.querySelector('.moving');
+            const x = Math.floor(Math.random() * window.innerWidth - 200); // Random horizontal position
+            const y = Math.floor(Math.random() * window.innerHeight - 200); // Random vertical position
+            movingDiv.style.left = Math.max(x, 300) + 'px';
+            movingDiv.style.top = Math.max(y, 400) + 'px';
+            movingDiv.style.position = 'absolute';
+        }
+
+        // Call the functions initially and set up intervals
+        changeShapingSize(); // Initial size change for "shaping" div
+        changeMovingPosition(); // Initial position change for "moving" div
+
+        // Set intervals to call the functions repeatedly
+        setInterval(changeShapingSize, 3000); // Change "shaping" div size every 7 seconds
+        setInterval(changeMovingPosition, 5000); // Change "moving" div position every 12 seconds
+    </script>
+    </body>
+</html>
