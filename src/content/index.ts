@@ -1,6 +1,6 @@
-import { GlobalOverlay } from "../components";
 import { storage } from "../storage";
-import createCustomElement from "../utils/createCustomElement";
+import { insertElement } from "../utils/customElements";
+import loadCustomElements from "../utils/loadCustomElements";
 
 // Content scripts
 // https://developer.chrome.com/docs/extensions/mv3/content_scripts/
@@ -11,7 +11,9 @@ import createCustomElement from "../utils/createCustomElement";
 // Some JS on the page
 storage.get().then(console.log);
 
-createCustomElement("global-button", GlobalOverlay.element);
+loadCustomElements();
+
+insertElement("global-overlay", document.documentElement, true);
 
 // Some svelte component on the page
 // new Overlay({ target: document.body });

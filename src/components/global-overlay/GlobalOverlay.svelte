@@ -4,13 +4,15 @@
     import GlobalButtonWindow from "./GlobalButtonWindow.svelte";
     import GlobalSettingsWindow from "./GlobalSettingsWindow.svelte";
     import GlobalHide from "./GlobalHide.svelte";
-    
+    import scanPage from "../../utils/scanPage";
+
     let hide = false;
 
     let active = false;
     let hoverTimer: number | undefined;
     const SETTINGS_SHOW_DELAY = 700;
     const SETTINGS_CLOSE_DELAY = 1000;
+    
     function onGlobalButtonHover() {
         if (!default_state) {
             clearTimeout(hoverTimer);
@@ -33,6 +35,7 @@
     function toggleGlobalButtonWindow() {
         global_button_window_open = !global_button_window_open;
         active = false;
+        scanPage();
     }
 
     let global_settings_window_open = false;
@@ -42,7 +45,6 @@
     }
 
     let default_state = global_button_window_open || global_settings_window_open;
-
 </script>
 
 {#if !hide}

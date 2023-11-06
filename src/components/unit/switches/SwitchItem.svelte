@@ -32,14 +32,12 @@
     }
     .switch-item-label {
         cursor: pointer;
-        display: flex;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: auto 48px;
+        grid-column-gap: 36px;
         position: relative;
         width: 100%;
         height: 100%;
-    }
-    .switch-item-text {
-        width: 200px;
     }
     .switch-item-checkbox {
         display: none;

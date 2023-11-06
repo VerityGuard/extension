@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Divider } from "../unit/basic";
+    import SelectItem from "../unit/select";
     import SwitchItem from "../unit/switches";
     import PopupSettingsHeader from "./SettingsHeader.svelte";
 </script>
@@ -11,6 +12,10 @@
         <SwitchItem text={"Lorem Ipsum is simply dummy text of the printing"} />
         <Divider />
         <SwitchItem text={"Lorem Ipsum is simply dummy text of the printing"} />
+        <Divider />
+        <SelectItem text={'Task'}/>
+        <Divider />
+        <SelectItem text={'Model'}/>
     </div>
 </div>
 
