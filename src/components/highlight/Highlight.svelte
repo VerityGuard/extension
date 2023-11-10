@@ -3,16 +3,16 @@
     import HighlightRect from "./HighlightRect.svelte";
     export let containerRect: HighlightRectInterface;
     export let rects: HighlightRectInterface[] = [];
-
-    console.log(containerRect);
 </script>
 
 <div class="highlight">
-    <div class="container" style="width: {containerRect.width}px; height: {containerRect.height}px;">
+    <div class="container" style="width: {containerRect.width}px; height: {containerRect.height + 2}px; top: {containerRect.top}px; left: {containerRect.left}px">
         <div class="ranges">
-            {#each rects as rect}
-                <HighlightRect {rect} />
-            {/each}
+            <div class="intersection">
+                {#each rects as rect}
+                    <HighlightRect {rect} />
+                {/each}
+            </div>
         </div>
     </div>
 </div>
@@ -31,6 +31,7 @@
         left: 0;
         position: relative;
         pointer-events: none;
+        overflow: hidden;
         border: 0;
         border-radius: 0;
         padding: 0;
@@ -40,5 +41,9 @@
         position: absolute;
         left: 0;
         top: 0;
+    }
+    .intersection {
+        width: 1300px;
+        height: 800px;
     }
 </style>

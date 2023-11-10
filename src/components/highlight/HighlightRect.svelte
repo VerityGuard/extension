@@ -10,17 +10,19 @@
 
 <style>
     .underline {
-        background-color: #ff99ab;
         position: absolute;
+        left: 0;
         bottom: -2px;
         width: 100%;
-        height: 3px;
+        z-index: 2;
+        border-bottom: 3px solid #ff99ab;
     }
     .background {
         opacity: 0.25;
         position: absolute;
         width: 100%;
         height: 100%;
+        z-index: 1;
         background-color: #f27388;
     }
     .content {
