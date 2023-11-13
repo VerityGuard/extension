@@ -1,8 +1,11 @@
 <script lang="ts">
     import { fly } from "svelte/transition";
     import LoaderRing from "../unit/loaders/LoaderRing.svelte";
+    import GlobalTextResults from "../global-results/GlobalTextResults.svelte";
+    import type { TextResultInterface } from "../../utils/interfaces";
 
     export let open = false;
+    export let results: Promise<TextResultInterface[]>;
 
     let icon = chrome.runtime.getURL('src/assets/icons/icon-32.png');
 
@@ -32,9 +35,25 @@
                 </button>
             </div>
         </div>
-        <div class="global-button-window-content">
-            <LoaderRing />
-        </div>
+        {#await results}
+            <div class="global-button-window-loading">
+                <LoaderRing />
+            </div>
+        {:then results}
+
+            <div class="global-button-window-content">
+                <div class="global-button-window-content-results">
+                    {#each results as result}
+                        <GlobalTextResults element={result.element} score={result.score} />
+                    {/each}
+                </div>
+            </div>
+                
+        {:catch error}
+                
+            <p>{error.message}</p>
+                
+        {/await}
     </div>
 {/if}
 
@@ -99,11 +118,24 @@
         border: none;
         border-radius: 4px;
     }
-    .global-button-window-content {
-        min-height: 320px;
-        padding: 16px 20px;
+    .global-button-window-loading {
+        height: 320px;
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
+    }
+    .global-button-window-content-results {
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+    }
+    .global-button-window-content {
+        height: 320px;
+        padding: 8px 10px;
+        display: flex;
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex-direction: row;
     }
 </style>

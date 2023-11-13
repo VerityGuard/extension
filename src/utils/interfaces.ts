@@ -8,3 +8,8 @@ export interface HighlightRectInterface {
     width: number;
     height: number;
 }
+
+export interface TextResultInterface {
+    element: HTMLElement;
+    score: number;
+}

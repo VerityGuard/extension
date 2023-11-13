@@ -1,36 +1,124 @@
 import { createElement } from "./customElements";
+import { adaptableIntersectionObserver, adaptableResizeObserver } from "./detectChanges";
 import type { HighlightRectInterface } from "./interfaces";
 import validOffsetParent from "./validOffsetParent";
 
-'use strict';
-
-const MIN_ELEMENTS_UNTIL_DELAY = 100;
 const highlightElementMap = new Map<HTMLElement, HTMLElement>();
+const observedElements = new WeakSet();
 
-function throttle<T extends (...args: any[]) => void>(f: T, delay: number) {
-    let timer: number = 0;
-    return function(this: any, ...args: Parameters<T>) {
-      clearTimeout(timer);
-      timer = setTimeout(() => f.apply(this, args), delay);
-    };
-}
-  
-export function adaptableResizeObserver() {
-    const observedElementsCount = highlightElementMap.size;
-    const delay = observedElementsCount > MIN_ELEMENTS_UNTIL_DELAY ? Math.round(Math.sqrt(observedElementsCount) * 4) : 0;
-    return new ResizeObserver(throttle((entries) => {
-        entries.forEach((entry: Event) => {
-            const element = entry.target as HTMLElement;
-            updateHighlight(element);
-        });
-    }, delay));
+const resizeObserver = adaptableResizeObserver(handleResize, 0);
+const intersectionObserver = adaptableIntersectionObserver({root: null, threshold: 0}, handleIntersection, 0);
+
+function handleIntersection(entries: IntersectionObserverEntry[]) {
+    entries.forEach((entry) => {
+        const element = entry.target as HTMLElement;
+        if (entry.isIntersecting) {
+            observeResize(element);
+        } else {
+            removeHighlight(element);
+            unobserveResize(element);
+        }
+    });
 }
 
-export function observeResize() {
-    const resizeObserver = adaptableResizeObserver();
-    for (const element of highlightElementMap.keys()) {
+function handleResize(entries: ResizeObserverEntry[]) {
+    entries.forEach((entry) => {
+        const element = entry.target as HTMLElement;
+        updateHighlight(element);
+    });
+}
+
+function observeResize(element: HTMLElement) {
+    if (!observedElements.has(element)) {
         resizeObserver.observe(element);
+        observedElements.add(element);
     }
+}
+
+function removeHighlight(element: HTMLElement) {
+    const associatedHighlight = highlightElementMap.get(element);
+    if (associatedHighlight) {
+        associatedHighlight.remove();
+        highlightElementMap.delete(element);
+    }
+}
+
+function unobserveResize(element: HTMLElement) {
+    if (observedElements.has(element)) {
+        resizeObserver.unobserve(element);
+        observedElements.delete(element);
+    }
+}
+
+export function observeIntersection() {
+    for (const element of highlightElementMap.keys()) {
+        intersectionObserver.observe(element);
+    }
+}
+
+/* HIGHLIGHT FUNCTIONS */
+
+export function updateHighlight(element: HTMLElement) {
+    const associatedHighlight = highlightElementMap.get(element);
+    const rects = highlightRectangles(element);
+
+    if (rects.length === 0) {
+        if (associatedHighlight) {
+            associatedHighlight.remove();
+            highlightElementMap.delete(element);
+        }
+        return;
+    }
+
+    const offsetParent = validOffsetParent(element) as HTMLElement | null;
+    const containerRect = {
+        top: element.offsetTop,
+        left: element.offsetLeft,
+        width: element.offsetWidth,
+        height: element.offsetHeight
+    } as HighlightRectInterface;
+
+    const mergedRects = mergeRectangles(rects, element);
+
+    if (associatedHighlight) {
+        associatedHighlight.setContainerRect(containerRect);
+        associatedHighlight.setRects(mergedRects);
+    } else {
+        const highlightElement = createElement('highlight', true);
+        highlightElement.setContainerRect(containerRect);
+        highlightElement.setRects(mergedRects);
+        (offsetParent || document.body).appendChild(highlightElement);
+        highlightElementMap.set(element, highlightElement);
+    }
+    intersectionObserver.observe(element);
+}
+
+export async function updateHighlightsAsync(elements: HTMLElement[]) {
+    for (const element of elements) {
+        await updateHighlightAsync(element);
+    }
+}
+
+async function updateHighlightAsync(element: HTMLElement) {
+    return new Promise<void>((resolve) => {
+        updateHighlight(element);
+        requestAnimationFrame(() => {
+            resolve();
+        });
+    });
+}
+
+export function exportHighlights(elements: HTMLElement[]) {
+    elements.forEach((element) => {
+        updateHighlight(element);
+    });
+}
+
+function highlightRectangles(element: HTMLElement) {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const rects = range.getClientRects();
+    return rects;
 }
 
 function adjustedRectangle(rect: DOMRect, offsetParentRect: DOMRect | null) {
@@ -85,64 +173,4 @@ function mergeRectangles(rectangles: DOMRectList | DOMRect[], offsetParent: HTML
     mergedRectangles.push(currentRect);
 
     return mergedRectangles;
-}
-
-export function updateHighlight(element: HTMLElement) {
-    const associatedHighlight = highlightElementMap.get(element);
-    const rects = highlightRectangles(element);
-
-    if (rects.length === 0) {
-        if (associatedHighlight) {
-            associatedHighlight.remove();
-            highlightElementMap.delete(element);
-        }
-        return; // No need to proceed if there are no rectangles to highlight.
-    }
-
-    const offsetParent = validOffsetParent(element) as HTMLElement | null;
-    const containerRect = adjustedRectangle(element.getBoundingClientRect(), offsetParent?.getBoundingClientRect() || null);
-    const mergedRects = mergeRectangles(rects, element);
-
-    if (associatedHighlight) {
-        // Update existing highlight
-        associatedHighlight.setContainerRect(containerRect);
-        associatedHighlight.setRects(mergedRects);
-    } else {
-        // Create and insert a new highlight
-        const highlightElement = createElement('highlight', true);
-        highlightElement.setContainerRect(containerRect);
-        highlightElement.setRects(mergedRects);
-        (offsetParent || document.body).appendChild(highlightElement);
-        highlightElementMap.set(element, highlightElement);
-    }
-}
-
-export async function updateHighlightsAsync(elements: HTMLElement[]) {
-    for (const element of elements) {
-        await updateHighlightAsync(element);
-    }
-}
-
-export function exportHighlights(elements: HTMLElement[]) {
-    elements.forEach((element) => {
-        updateHighlight(element);
-    });
-}
-
-function highlightRectangles(element: HTMLElement) {
-    const range = document.createRange();
-    range.selectNodeContents(element);
-    const rects = range.getClientRects();
-    return rects;
-}
-
-async function updateHighlightAsync(element: HTMLElement) {
-    return new Promise<void>((resolve) => {
-        updateHighlight(element);
-        requestAnimationFrame(() => {
-            // Code to run after rendering is complete
-            console.log("Rendering is complete, and highlight element is visible now.");
-            resolve();
-        });
-    });
 }

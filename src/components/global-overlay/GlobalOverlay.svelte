@@ -5,16 +5,18 @@
     import GlobalSettingsWindow from "./GlobalSettingsWindow.svelte";
     import GlobalHide from "./GlobalHide.svelte";
     import scanPage from "../../utils/scanPage";
+    import type { TextResultInterface } from "../../utils/interfaces";
 
     let hide = false;
 
     let active = false;
     let hoverTimer: number | undefined;
+
     const SETTINGS_SHOW_DELAY = 700;
     const SETTINGS_CLOSE_DELAY = 1000;
     
     function onGlobalButtonHover() {
-        if (!default_state) {
+        if (!defaultState) {
             clearTimeout(hoverTimer);
             hoverTimer = setTimeout(() => {
                 active = true;
@@ -23,7 +25,7 @@
     }
 
     function onGlobalButtonLeave() {
-        if (!default_state) {
+        if (!defaultState) {
             clearTimeout(hoverTimer);
             hoverTimer = setTimeout(() => {
                 active = false;
@@ -31,25 +33,31 @@
         }
     }
 
-    let global_button_window_open = false;
-    function toggleGlobalButtonWindow() {
-        global_button_window_open = !global_button_window_open;
+    let results: Promise<TextResultInterface[]>;
+
+    let globalButtonWindowOpen = false;
+    
+    async function toggleGlobalButtonWindow() {
+        globalButtonWindowOpen = !globalButtonWindowOpen;
         active = false;
-        scanPage();
+
+        results = scanPage();
+        
+        console.log("Page scanned");
     }
 
-    let global_settings_window_open = false;
+    let GlobalSettingsWindowOpen = false;
     function toggleGlobalSettingsWindow() {
-        global_settings_window_open = !global_settings_window_open;
+        GlobalSettingsWindowOpen = !GlobalSettingsWindowOpen;
         active = false;
     }
 
-    let default_state = global_button_window_open || global_settings_window_open;
+    let defaultState = globalButtonWindowOpen || GlobalSettingsWindowOpen;
 </script>
 
 {#if !hide}
-    <GlobalButtonWindow bind:open={global_button_window_open} />
-    <GlobalSettingsWindow bind:open={global_settings_window_open} />
+    <GlobalButtonWindow bind:open={globalButtonWindowOpen} {results} />
+    <GlobalSettingsWindow bind:open={GlobalSettingsWindowOpen} />
     <div class="global-button-wrapper" role="presentation" 
         on:mouseenter={onGlobalButtonHover} 
         on:mouseleave={onGlobalButtonLeave}

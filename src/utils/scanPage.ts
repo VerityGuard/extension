@@ -1,4 +1,5 @@
-import { updateHighlightsAsync, observeResize } from "./highlight";
+import { observeIntersection, updateHighlightsAsync } from "./highlight";
+import type { TextResultInterface } from "./interfaces";
 
 const RELEVANT_TAGS = new Set(['span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 const MIN_TEXT_LENGTH = 100;
@@ -57,36 +58,43 @@ function findRelevantElements(root: HTMLElement) {
 
 function findRelevantElements2(root: HTMLElement) {
     const elements = root.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span');
-    return Array.from(elements).filter((element: HTMLElement) => {
+    return Array.from(elements).filter((element: Element) => {
         const textContent = element.textContent?.trim();
         if (!textContent || textContent.length < MIN_TEXT_LENGTH) {
             return false;
         }
     
-        // Check if the element has a parent with one of the relevant tags
         let parent = element.parentElement;
         while (parent) {
             if (RELEVANT_TAGS.has(parent.tagName.toLowerCase())) {
-                return false; // Exclude this element
+                return false;
             }
             parent = parent.parentElement;
         }
     
-        return true; // Include this element
+        return true;
     });
 }
 
 export default async function scanPage() {
     let startTime = new Date();
-    const elements = findRelevantElements2(document.body);
+    const elements = findRelevantElements2(document.body) as HTMLElement[];
     let endTime = new Date();
     let timeElapsed = endTime - startTime;
     console.log(`Time elapsed: ${timeElapsed}ms`);
     console.log(elements);
 
-    await updateHighlightsAsync(elements as Array<HTMLElement>);
+    await updateHighlightsAsync(elements);
 
-    observeResize();
+    let results: TextResultInterface[] = [];
+    for (const element of elements) {
+        results.push(
+            { 
+                element: element, 
+                score: Math.random() 
+            }
+        );
+    }
 
-    return elements;
+    return results;
 }
