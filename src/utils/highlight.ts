@@ -50,10 +50,10 @@ function unobserveResize(element: HTMLElement) {
     }
 }
 
-export function observeIntersection() {
-    for (const element of highlightElementMap.keys()) {
+export function observeIntersection(elements: HTMLElement[]) {
+    elements.forEach((element) => {
         intersectionObserver.observe(element);
-    }
+    });
 }
 
 /* HIGHLIGHT FUNCTIONS */
@@ -90,7 +90,6 @@ export function updateHighlight(element: HTMLElement) {
         (offsetParent || document.body).appendChild(highlightElement);
         highlightElementMap.set(element, highlightElement);
     }
-    intersectionObserver.observe(element);
 }
 
 export async function updateHighlightsAsync(elements: HTMLElement[]) {

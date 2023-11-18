@@ -126,16 +126,17 @@
         flex-direction: column;
     }
     .global-button-window-content-results {
-        display: flex;
+        display: grid;
+        padding: 12px;
+        gap: 12px;
         width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
         flex-direction: column;
     }
     .global-button-window-content {
         height: 320px;
-        padding: 8px 10px;
         display: flex;
-        overflow-y: auto;
-        overflow-x: hidden;
         flex-direction: row;
     }
 </style>

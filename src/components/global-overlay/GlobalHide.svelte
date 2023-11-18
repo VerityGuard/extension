@@ -23,7 +23,7 @@
         cursor: pointer;
         height: 18px;
         width: 18px;
-        background-color: #8d0d0d;
+        background-color: #c01111;
         border: 0.5px solid rgba(0,0,0,.1);
         border-radius: 50%;
         box-shadow: 0 2px 8px 0 rgb(0 0 0 / 20%);

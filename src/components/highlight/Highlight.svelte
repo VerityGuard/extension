@@ -8,11 +8,9 @@
 <div class="highlight">
     <div class="container" style="width: {containerRect.width}px; height: {containerRect.height + 2}px; top: {containerRect.top}px; left: {containerRect.left}px">
         <div class="ranges">
-            <div class="intersection">
-                {#each rects as rect}
-                    <HighlightRect {rect} />
-                {/each}
-            </div>
+            {#each rects as rect}
+                <HighlightRect {rect} />
+            {/each}
         </div>
     </div>
 </div>
@@ -36,14 +34,11 @@
         border-radius: 0;
         padding: 0;
         margin: 0;
+        z-index: 0;
     }
     .ranges {
         position: absolute;
         left: 0;
         top: 0;
-    }
-    .intersection {
-        width: 1300px;
-        height: 800px;
     }
 </style>

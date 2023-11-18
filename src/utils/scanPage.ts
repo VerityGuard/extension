@@ -1,5 +1,6 @@
 import { observeIntersection, updateHighlightsAsync } from "./highlight";
 import type { TextResultInterface } from "./interfaces";
+import { isVisible } from "./isVisible";
 
 const RELEVANT_TAGS = new Set(['span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 const MIN_TEXT_LENGTH = 100;
@@ -60,7 +61,7 @@ function findRelevantElements2(root: HTMLElement) {
     const elements = root.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span');
     return Array.from(elements).filter((element: Element) => {
         const textContent = element.textContent?.trim();
-        if (!textContent || textContent.length < MIN_TEXT_LENGTH) {
+        if (!textContent || textContent.length < MIN_TEXT_LENGTH || !isVisible(element as HTMLElement)) {
             return false;
         }
     
@@ -84,7 +85,7 @@ export default async function scanPage() {
     console.log(`Time elapsed: ${timeElapsed}ms`);
     console.log(elements);
 
-    await updateHighlightsAsync(elements);
+    observeIntersection(elements);
 
     let results: TextResultInterface[] = [];
     for (const element of elements) {
