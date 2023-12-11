@@ -3,6 +3,26 @@
     import SelectItem from "../unit/select";
     import SwitchItem from "../unit/switches";
     import PopupSettingsHeader from "./SettingsHeader.svelte";
+
+    async function getModels() {
+        const MODELS_URL = `${process.env.BASE_API_URL}/${process.env.MODEL_PATH}`;
+
+        const res = await fetch(MODELS_URL, {
+            credentials: 'include',
+            method: "GET",
+        });
+
+        if (!res.ok) {
+            const response = await res.json();
+            console.error(response);
+        }
+
+        const models = await res.json();
+
+        return models;
+    }
+    
+    const models = getModels();
 </script>
 
 <div class="main">
@@ -15,7 +35,7 @@
         <Divider />
         <SelectItem text={'Task'}/>
         <Divider />
-        <SelectItem text={'Model'}/>
+        <SelectItem text={'Model'} options={models}/>
     </div>
 </div>
 

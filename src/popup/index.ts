@@ -3,7 +3,7 @@ import { Popup } from "../components/";
 // Action popup
 // https://developer.chrome.com/docs/extensions/reference/action/
 
-function render() {
+async function render() {
     const target = document.getElementsByClassName("popup")[0];
 
     if (target) {

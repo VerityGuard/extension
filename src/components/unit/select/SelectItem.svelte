@@ -1,11 +1,12 @@
 <script lang="ts">
     import Select from "./Select.svelte";
     export let text = "";
+    export let options = [];
 </script>
 
 <div class="select-item">
     <div class="select-item-text">{text}</div>
-    <Select />
+    <Select options />
 </div>
 
 <style>

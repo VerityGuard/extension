@@ -1,15 +1,12 @@
 <script>
     import { fade } from "svelte/transition";
 
-    const options = [
-        'hello',
-        'something-there',
-        'somet2here',
-        'cool-model',
-        'cool-model1',
-    ]
+    /**
+     * @type {string[]}
+     */
+     export let options = [];
 
-    let selected = options[0];
+    let selected = options.length ? options[0] : '';
     let focused = false;
 
     /** @type {HTMLSpanElement} */

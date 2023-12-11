@@ -2,7 +2,7 @@ import { observeIntersection, updateHighlightsAsync } from "./highlight";
 import type { TextResultInterface } from "./interfaces";
 import { isVisible } from "./isVisible";
 
-const RELEVANT_TAGS = new Set(['span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
+const RELEVANT_TAGS = new Set(['span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'td', 'th']);
 const MIN_TEXT_LENGTH = 100;
 
 function createTreeWalker() {
@@ -58,7 +58,7 @@ function findRelevantElements(root: HTMLElement) {
 }
 
 function findRelevantElements2(root: HTMLElement) {
-    const elements = root.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span');
+    const elements = root.querySelectorAll([...RELEVANT_TAGS].join(', '));
     return Array.from(elements).filter((element: Element) => {
         const textContent = element.textContent?.trim();
         if (!textContent || textContent.length < MIN_TEXT_LENGTH || !isVisible(element as HTMLElement)) {
@@ -78,12 +78,7 @@ function findRelevantElements2(root: HTMLElement) {
 }
 
 export default async function scanPage() {
-    let startTime = new Date();
     const elements = findRelevantElements2(document.body) as HTMLElement[];
-    let endTime = new Date();
-    let timeElapsed = endTime - startTime;
-    console.log(`Time elapsed: ${timeElapsed}ms`);
-    console.log(elements);
 
     observeIntersection(elements);
 
